@@ -84,6 +84,99 @@ function selectColor(result) {
 
 /***/ }),
 
+/***/ 3109:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const gh = __nccwpck_require__(5438);
+const core = __nccwpck_require__(2186);
+const load_1 = __nccwpck_require__(6791);
+const format_1 = __nccwpck_require__(6610);
+const lint_1 = __nccwpck_require__(9152);
+main().catch((err) => {
+    core.setFailed(err);
+});
+function main() {
+    return __awaiter(this, void 0, void 0, function* () {
+        const config = yield load_1.default();
+        if (Object.keys(config.rules).length == 0)
+            throw new Error("There are no commitlint rules");
+        const parserOptions = selectParserOptions(config.parserPreset);
+        const commitlintOptions = {
+            parserOptions: parserOptions || {},
+            plugins: config.plugins,
+            ignores: config.ignores,
+            defaultIgnores: config.defaultIgnores,
+        };
+        const context = gh.context;
+        const token = core.getInput("token", { required: true });
+        const octokit = gh.getOctokit(token);
+        core.startGroup("Fetching commit messages...");
+        const commits = yield fetchCommits(octokit, context);
+        core.endGroup();
+        core.startGroup("Linting...");
+        const results = yield lint(commits, config.rules, commitlintOptions);
+        const report = makeReport(results);
+        const output = format_1.default(report);
+        if (!report.valid)
+            core.setFailed(output);
+        else if (output)
+            core.info(output);
+        core.endGroup();
+    });
+}
+function fetchCommits(octokit, context) {
+    var _a;
+    const defaultParams = Object.assign(Object.assign({}, context.repo), { per_page: 100 });
+    switch (context.eventName) {
+        case "pull_request":
+            return octokit.paginate(octokit.rest.pulls.listCommits, Object.assign(Object.assign({}, defaultParams), { pull_number: assertDefined((_a = context.payload.pull_request) === null || _a === void 0 ? void 0 : _a.number, "Missing pull request number") }));
+        case "push":
+            return octokit.paginate(octokit.rest.repos.listCommits, Object.assign(Object.assign({}, defaultParams), { ref: context.ref }));
+        default:
+            return octokit.paginate(octokit.rest.repos.listCommits, defaultParams);
+    }
+}
+function lint(paginator, rules, options) {
+    return Promise.all(paginator.map((commitData) => lint_1.default(commitData.commit.message, rules, options).then((outcome) => (Object.assign(Object.assign({}, outcome), { url: commitData.url })))));
+}
+function makeReport(outcomes) {
+    return outcomes.reduce((info, result) => {
+        info.valid && (info.valid = result.valid);
+        info.results.push(result);
+        return info;
+    }, {
+        valid: true,
+        results: new Array(),
+    });
+}
+function assertDefined(item, message) {
+    if (item === undefined)
+        throw new Error(message || "Unexpectedly undefined");
+    return item;
+}
+function selectParserOptions(parserPreset) {
+    if (typeof parserPreset !== "object")
+        return undefined;
+    if (typeof parserPreset.parserOpts !== "object")
+        return undefined;
+    return parserPreset.parserOpts;
+}
+//# sourceMappingURL=main.js.map
+
+/***/ }),
+
 /***/ 7351:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
@@ -53590,97 +53683,13 @@ module.exports = require("zlib");;
 /******/ 	/* webpack/runtime/compat */
 /******/ 	
 /******/ 	if (typeof __nccwpck_require__ !== 'undefined') __nccwpck_require__.ab = __dirname + "/";/************************************************************************/
-var __webpack_exports__ = {};
-// This entry need to be wrapped in an IIFE because it need to be in strict mode.
-(() => {
-"use strict";
-var exports = __webpack_exports__;
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-const gh = __nccwpck_require__(5438);
-const core = __nccwpck_require__(2186);
-const load_1 = __nccwpck_require__(6791);
-const format_1 = __nccwpck_require__(6610);
-const lint_1 = __nccwpck_require__(9152);
-main().catch((err) => {
-    core.setFailed(err);
-});
-async function main() {
-    const config = await load_1.default();
-    if (Object.keys(config.rules).length == 0)
-        throw new Error("There are no commitlint rules");
-    const parserOptions = selectParserOptions(config.parserPreset);
-    const commitlintOptions = {
-        parserOptions: parserOptions || {},
-        plugins: config.plugins,
-        ignores: config.ignores,
-        defaultIgnores: config.defaultIgnores,
-    };
-    const context = gh.context;
-    const token = core.getInput("token", { required: true });
-    const octokit = gh.getOctokit(token);
-    core.startGroup("Fetching commit messages...");
-    const commits = await fetchCommits(octokit, context);
-    core.endGroup();
-    core.startGroup("Linting...");
-    const results = await lint(commits, config.rules, commitlintOptions);
-    const report = makeReport(results);
-    const output = format_1.default(report);
-    if (!report.valid)
-        core.setFailed(output);
-    else if (output)
-        core.info(output);
-    core.endGroup();
-}
-function fetchCommits(octokit, context) {
-    const defaultParams = { ...context.repo, per_page: 100 };
-    switch (context.eventName) {
-        case "pull_request":
-            return octokit.paginate(octokit.rest.pulls.listCommits, {
-                ...defaultParams,
-                pull_number: assertDefined(context.payload.pull_request?.number, "Missing pull request number"),
-            });
-        case "push":
-            return octokit.paginate(octokit.rest.repos.listCommits, {
-                ...defaultParams,
-                ref: context.ref,
-            });
-        default:
-            return octokit.paginate(octokit.rest.repos.listCommits, defaultParams);
-    }
-}
-function lint(paginator, rules, options) {
-    return Promise.all(paginator.map((commitData) => lint_1.default(commitData.commit.message, rules, options).then((outcome) => ({
-        ...outcome,
-        url: commitData.url,
-    }))));
-}
-function makeReport(outcomes) {
-    return outcomes.reduce((info, result) => {
-        info.valid && (info.valid = result.valid);
-        info.results.push(result);
-        return info;
-    }, {
-        valid: true,
-        results: new Array(),
-    });
-}
-function assertDefined(item, message) {
-    if (item === undefined)
-        throw new Error(message || "Unexpectedly undefined");
-    return item;
-}
-function selectParserOptions(parserPreset) {
-    if (typeof parserPreset !== "object")
-        return undefined;
-    if (typeof parserPreset.parserOpts !== "object")
-        return undefined;
-    return parserPreset.parserOpts;
-}
-//# sourceMappingURL=main.js.map
-})();
-
-module.exports = __webpack_exports__;
+/******/ 	
+/******/ 	// startup
+/******/ 	// Load entry module and return exports
+/******/ 	// This entry module is referenced by other modules so it can't be inlined
+/******/ 	var __webpack_exports__ = __nccwpck_require__(3109);
+/******/ 	module.exports = __webpack_exports__;
+/******/ 	
 /******/ })()
 ;
 //# sourceMappingURL=index.js.map
