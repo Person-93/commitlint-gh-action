@@ -41,3 +41,8 @@ repos:
         language: system
         entry: npm run prettier --write
         types: [ ts ]
+      - id: package
+        name: package
+        language: system
+        entry: npm run package
+        stages: [ push ]
