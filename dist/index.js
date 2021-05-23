@@ -129,7 +129,7 @@ function main() {
         core.startGroup("Linting...");
         const results = yield lint(commits, config.rules, commitlintOptions);
         const report = makeReport(results);
-        const output = format_1.default(report);
+        const output = format_1.default(report, { color: false });
         if (!report.valid)
             core.setFailed(output);
         else if (output)

@@ -40,7 +40,7 @@ async function main() {
     core.startGroup("Linting...");
     const results = await lint(commits, config.rules, commitlintOptions);
     const report = makeReport(results);
-    const output = format(report);
+    const output = format(report, { color: false });
     if (!report.valid) core.setFailed(output);
     else if (output) core.info(output);
     core.endGroup();
