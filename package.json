@@ -8,14 +8,15 @@
     "action",
     "commitlint"
   ],
-  "main": "dist/main.js",
+  "main": "lib/main.js",
   "scripts": {
     "build": "tsc",
     "prestart": "npm run build",
     "start": "node dist/main.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "eslint": "eslint",
-    "prettier": "prettier"
+    "prettier": "prettier",
+    "package": "ncc build --source-map --license licenses.txt"
   },
   "author": "person93",
   "license": "MIT",
@@ -24,6 +25,7 @@
     "@types/node": "^15.6.0",
     "@typescript-eslint/eslint-plugin": "^4.24.0",
     "@typescript-eslint/parser": "^4.24.0",
+    "@vercel/ncc": "^0.28.5",
     "eslint": "^7.26.0",
     "eslint-config-prettier": "^8.3.0",
     "prettier": "2.3.0",
