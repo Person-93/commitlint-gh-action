@@ -7,4 +7,5 @@ runs:
 inputs:
   token:
     description: A token for the repo. Only needs read access.
-    required: true
+    required: false
+    default: ${{ github.token }}
