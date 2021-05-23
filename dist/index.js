@@ -149,8 +149,8 @@ function fetchCommits(octokit, context) {
             return octokit.paginate(octokit.rest.repos.listCommits, defaultParams);
     }
 }
-function lint(paginator, rules, options) {
-    return Promise.all(paginator.map((commitData) => lint_1.default(commitData.commit.message, rules, options).then((outcome) => (Object.assign(Object.assign({}, outcome), { url: commitData.url })))));
+function lint(commits, rules, options) {
+    return Promise.all(commits.map((commitData) => lint_1.default(commitData.commit.message, rules, options).then((outcome) => (Object.assign(Object.assign({}, outcome), { url: commitData.url })))));
 }
 function makeReport(outcomes) {
     return outcomes.reduce((info, result) => {

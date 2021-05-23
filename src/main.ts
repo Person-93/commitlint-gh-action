@@ -71,12 +71,12 @@ function fetchCommits(octokit: Octokit, context: typeof gh.context) {
 }
 
 function lint(
-    paginator: Commits,
+    commits: Commits,
     rules: QualifiedRules,
     options: LintOptions & { parserOptions: ParserOptions }
 ): Promise<LintOutcome[]> {
     return Promise.all(
-        paginator.map((commitData) =>
+        commits.map((commitData) =>
             doLint(commitData.commit.message, rules, options).then((outcome) => ({
                 ...outcome,
                 url: commitData.url,
