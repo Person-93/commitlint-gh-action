@@ -45,6 +45,6 @@ repos:
         name: package
         language: system
         entry: npm run package
-        stages: [ push ]
-        always_run: true
+        stages: [ commit ]
         pass_filenames: false
+        types: [ ts ]
