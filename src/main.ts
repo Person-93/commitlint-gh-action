@@ -13,6 +13,7 @@ import doLint from "@commitlint/lint";
 
 main().catch((err) => {
     core.setFailed(err);
+    core.debug(err.stack);
 });
 
 async function main() {
@@ -84,9 +85,7 @@ function lint(
     );
 }
 
-function makeReport(
-    outcomes: LintOutcome[]
-): FormattableReport & { valid: boolean } {
+function makeReport(outcomes: LintOutcome[]): FormattableReport & { valid: boolean } {
     return outcomes.reduce(
         (info, result) => {
             info.valid &&= result.valid;

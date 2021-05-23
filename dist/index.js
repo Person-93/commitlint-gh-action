@@ -106,6 +106,7 @@ const format_1 = __nccwpck_require__(6610);
 const lint_1 = __nccwpck_require__(9152);
 main().catch((err) => {
     core.setFailed(err);
+    core.debug(err.stack);
 });
 function main() {
     return __awaiter(this, void 0, void 0, function* () {
