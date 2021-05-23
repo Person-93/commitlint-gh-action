@@ -1,0 +1,10 @@
+name: commitlint
+author: person93
+description: Run commitlint (https://commitlint.js.org/)
+runs:
+  using: node12
+  main: dist/main.js
+inputs:
+  token:
+    description: A token for the repo. Only needs read access.
+    required: true
