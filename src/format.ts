@@ -16,8 +16,12 @@ export default function format(
     const fr = (result: FormattableResult) => formatResult(result, options);
 
     return results
-        .filter((r) => Array.isArray(r.warnings) || Array.isArray(r.errors))
-        .map((result) => [...fi(result), ...fr(result), result.url])
+        .filter(
+            (result) =>
+                (Array.isArray(result.warnings) && result.warnings.length) ||
+                (Array.isArray(result.errors) && result.errors.length)
+        )
+        .map((result) => [...fi(result), ...fr(result)])
         .reduce(
             (acc, item) => (Array.isArray(item) ? [...acc, ...item] : [...acc, item]),
             []
@@ -91,6 +95,8 @@ export function formatResult(
         fmtSummary,
         help,
         help ? "" : undefined,
+        result.url,
+        "",
     ].filter((line): line is string => typeof line === "string");
 }
 
