@@ -1,4 +1,4 @@
-name: commitlint
+name: commitlint-gh-action
 author: person93
 description: Run commitlint (https://commitlint.js.org/)
 runs:
@@ -9,3 +9,6 @@ inputs:
     description: A token for the repo. Only needs read access.
     required: false
     default: ${{ github.token }}
+branding:
+  icon: git-commit
+  color: gray-dark
