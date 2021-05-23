@@ -150,7 +150,7 @@ function fetchCommits(octokit, context) {
     }
 }
 function lint(commits, rules, options) {
-    return Promise.all(commits.map((commitData) => lint_1.default(commitData.commit.message, rules, options).then((outcome) => (Object.assign(Object.assign({}, outcome), { url: commitData.url })))));
+    return Promise.all(commits.map((commitData) => lint_1.default(commitData.commit.message, rules, options).then((outcome) => (Object.assign(Object.assign({}, outcome), { url: commitData.html_url })))));
 }
 function makeReport(outcomes) {
     return outcomes.reduce((info, result) => {

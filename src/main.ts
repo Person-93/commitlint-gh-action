@@ -79,7 +79,7 @@ function lint(
         commits.map((commitData) =>
             doLint(commitData.commit.message, rules, options).then((outcome) => ({
                 ...outcome,
-                url: commitData.url,
+                url: commitData.html_url,
             }))
         )
     );
