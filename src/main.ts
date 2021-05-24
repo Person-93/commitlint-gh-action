@@ -10,6 +10,7 @@ import {
 import { Commits, FormattableReport, Octokit, LintOutcome } from "./types";
 import format from "./format";
 import doLint from "@commitlint/lint";
+import * as moment from "moment";
 
 main().catch((err) => {
     core.setFailed(err);
@@ -17,6 +18,14 @@ main().catch((err) => {
 });
 
 async function main() {
+    const sinceString = core.getInput("since");
+    const since =
+        sinceString.length > 0 ? moment(sinceString, moment.ISO_8601) : undefined;
+    if (since !== undefined && !since.isValid())
+        throw new Error(
+            `'${sinceString}' is not a valid ISO 8601 date time. See https://en.wikipedia.org/wiki/ISO_8601`
+        );
+
     const config = await load();
     if (Object.keys(config.rules).length == 0)
         throw new Error("There are no commitlint rules");
@@ -34,7 +43,8 @@ async function main() {
     const octokit = gh.getOctokit(token);
 
     core.startGroup("Fetching commit messages...");
-    const commits = await fetchCommits(octokit, context);
+    if (since !== undefined) core.info(`Only getting commits since ${since}`);
+    const commits = await fetchCommits(octokit, context, since);
     core.endGroup();
 
     core.startGroup("Linting...");
@@ -46,8 +56,16 @@ async function main() {
     core.endGroup();
 }
 
-function fetchCommits(octokit: Octokit, context: typeof gh.context) {
-    const defaultParams = { ...context.repo, per_page: 100 };
+function fetchCommits(
+    octokit: Octokit,
+    context: typeof gh.context,
+    since?: moment.Moment
+) {
+    const defaultParams = {
+        ...context.repo,
+        per_page: 100,
+        since: since?.toISOString(true),
+    };
 
     switch (context.eventName) {
         case "pull_request":

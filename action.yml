@@ -9,6 +9,11 @@ inputs:
     description: A token for the repo. Only needs read access.
     required: false
     default: ${{ github.token }}
+  since:
+    description: >
+      An ISO 8601 date time string. No commits from before that time will be linted.
+      Useful if commit standards were not adopted from the beginning.
+    required: false
 branding:
   icon: git-commit
   color: gray-dark
