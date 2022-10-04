@@ -37,6 +37,6 @@
     "@commitlint/lint": "^12.1.4",
     "@commitlint/load": "^12.1.4",
     "@commitlint/types": "^12.1.4",
-    "moment": "^2.29.2"
+    "moment": "^2.29.4"
   }
 }
